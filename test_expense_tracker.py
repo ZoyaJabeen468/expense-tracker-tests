@@ -12,12 +12,17 @@ APP_URL = "http://13.51.201.54:3000"
 @pytest.fixture(scope="module")
 def driver():
     options = Options()
+    options.binary_location = "/usr/bin/chromium"
     options.add_argument("--headless")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-gpu")
     options.add_argument("--window-size=1920,1080")
-    driver = webdriver.Chrome(options=options)
+    from selenium.webdriver.chrome.service import Service
+    driver = webdriver.Chrome(
+        service=Service("/usr/bin/chromedriver"),
+        options=options
+    )
     driver.implicitly_wait(10)
     yield driver
     driver.quit()
