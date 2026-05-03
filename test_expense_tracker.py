@@ -12,7 +12,7 @@ APP_URL = "http://localhost:3001"
 @pytest.fixture(scope="module")
 def driver():
     options = Options()
-    options.binary_location = "/usr/bin/chromium-browser"
+    options.binary_location = "/snap/bin/chromium"
     options.add_argument("--headless")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
@@ -20,7 +20,7 @@ def driver():
     options.add_argument("--window-size=1920,1080")
     from selenium.webdriver.chrome.service import Service
     driver = webdriver.Chrome(
-        service=Service("/usr/bin/chromedriver"),
+        service=Service("/snap/chromium/current/usr/lib/chromium-browser/chromedriver"),
         options=options
     )
     driver.implicitly_wait(10)
@@ -80,7 +80,7 @@ def test_10_search_bar_visible(driver):
 # TC11 - Add a new expense successfully
 def test_11_add_expense(driver):
     driver.get(APP_URL)
-    time.sleep(2)
+    time.sleep(0.5)
     driver.find_element(By.XPATH, "//input[@placeholder='Title *']").clear()
     driver.find_element(By.XPATH, "//input[@placeholder='Title *']").send_keys("Test Expense")
     driver.find_element(By.XPATH, "//input[@placeholder='Amount (Rs.) *']").clear()
@@ -88,7 +88,7 @@ def test_11_add_expense(driver):
     Select(driver.find_element(By.XPATH, "//select")).select_by_visible_text("Food")
     driver.find_element(By.XPATH, "//input[@type='date']").send_keys("2026-05-01")
     driver.find_element(By.XPATH, "//button[contains(text(),'Save Expense')]").click()
-    time.sleep(2)
+    time.sleep(0.5)
     page_text = driver.find_element(By.TAG_NAME, "body").text
     assert "Test Expense" in page_text
 
@@ -100,30 +100,30 @@ def test_12_expense_in_list(driver):
 # TC13 - Search functionality works
 def test_13_search_works(driver):
     driver.get(APP_URL)
-    time.sleep(2)
+    time.sleep(0.5)
     search = driver.find_element(By.XPATH, "//input[@placeholder='Search expenses...']")
     search.clear()
     search.send_keys("Test Expense")
-    time.sleep(2)
+    time.sleep(0.5)
     page_text = driver.find_element(By.TAG_NAME, "body").text
     assert "Test Expense" in page_text
 
 # TC14 - Category filter dropdown works
 def test_14_category_filter(driver):
     driver.get(APP_URL)
-    time.sleep(2)
+    time.sleep(0.5)
     filters = driver.find_elements(By.XPATH, "//select")
     assert len(filters) >= 1
 
 # TC15 - Delete expense works
 def test_15_delete_expense(driver):
     driver.get(APP_URL)
-    time.sleep(2)
+    time.sleep(0.5)
     delete_buttons = driver.find_elements(By.XPATH, "//button[contains(text(),'Delete')]")
     if len(delete_buttons) > 0:
         initial_count = len(delete_buttons)
         delete_buttons[0].click()
-        time.sleep(2)
+        time.sleep(0.5)
         new_delete_buttons = driver.find_elements(By.XPATH, "//button[contains(text(),'Delete')]")
         assert len(new_delete_buttons) < initial_count
     else:
