@@ -1,14 +1,6 @@
 FROM python:3.11-slim
 
-RUN apt-get update && apt-get install -y \
-    wget gnupg unzip curl \
-    && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
-    && echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list \
-    && apt-get update \
-    && apt-get install -y google-chrome-stable \
-    && rm -rf /var/lib/apt/lists/*
-
-RUN apt-get update && apt-get install -y chromium-driver || true
+RUN apt-get update && apt-get install -y wget gnupg unzip curl ca-certificates && install -m 0755 -d /etc/apt/keyrings && wget -q -O /etc/apt/keyrings/google-chrome.asc https://dl-ssl.google.com/linux/linux_signing_key.pub && echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/google-chrome.asc] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list && apt-get update && apt-get install -y google-chrome-stable && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /tests
 COPY requirements.txt .
